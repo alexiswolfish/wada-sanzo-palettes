@@ -1,8 +1,11 @@
-# React + Vite
+# Wada Sanzo Palette Visualizer
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+This repo visualizes the color palettes in Wada Sanzo's Dictionary of Color Combinations.
 
-Currently, two official plugins are available:
+Sanzo Wada (1883-1967) was a Japanese artist, costume and kimono designer, and educator. He studied Western-style painting, worked across art and design disciplines, and received an Academy Award for costume design for *Gate of Hell* in 1954.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+The original color work behind *A Dictionary of Color Combinations* was developed in the 1930s and later republished in English, making his palette studies widely accessible to contemporary designers.
+
+## Source
+
+- https://en.wikipedia.org/wiki/Sanzo_Wada
