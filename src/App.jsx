@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import rawColors from 'dictionary-of-colour-combinations'
 
 const ALL_COLORS = rawColors.map((color, index) => ({ ...color, _index: index }))
@@ -18,6 +18,13 @@ function buildPalettes(colors) {
 
 const ALL_PALETTES = buildPalettes(ALL_COLORS)
 const PALETTES_BY_ID = new Map(ALL_PALETTES.map((palette) => [palette.id, palette]))
+
+function getPaletteFromHash() {
+  const match = window.location.hash.match(/^#\/palette\/(\d+)$/)
+  if (!match) return null
+
+  return PALETTES_BY_ID.get(Number(match[1])) ?? null
+}
 
 function getReadableTextColor([r, g, b]) {
   const luma = (0.299 * r + 0.587 * g + 0.114 * b) / 255
@@ -166,14 +173,40 @@ function PaletteDetail({ palette, color, onBackToColor }) {
 
 export default function App() {
   const [selectedColor, setSelectedColor] = useState(null)
-  const [selectedPalette, setSelectedPalette] = useState(null)
+  const [selectedPalette, setSelectedPalette] = useState(() => getPaletteFromHash())
 
-  if (selectedColor && selectedPalette) {
+  useEffect(() => {
+    const onHashChange = () => {
+      const paletteFromHash = getPaletteFromHash()
+      if (paletteFromHash) {
+        setSelectedPalette(paletteFromHash)
+      } else if (!selectedColor) {
+        setSelectedPalette(null)
+      }
+    }
+
+    window.addEventListener('hashchange', onHashChange)
+    return () => window.removeEventListener('hashchange', onHashChange)
+  }, [selectedColor])
+
+  const openPalette = (palette) => {
+    window.location.hash = `/palette/${palette.id}`
+    setSelectedPalette(palette)
+  }
+
+  const closePalette = () => {
+    if (window.location.hash.startsWith('#/palette/')) {
+      window.history.replaceState(null, '', window.location.pathname + window.location.search)
+    }
+    setSelectedPalette(null)
+  }
+
+  if (selectedPalette) {
     return (
       <PaletteDetail
-        color={selectedColor}
+        color={selectedColor ?? selectedPalette.colors[0]}
         palette={selectedPalette}
-        onBackToColor={() => setSelectedPalette(null)}
+        onBackToColor={closePalette}
       />
     )
   }
@@ -183,7 +216,7 @@ export default function App() {
       <ColorDetail
         color={selectedColor}
         onBackHome={() => setSelectedColor(null)}
-        onOpenPalette={(palette) => setSelectedPalette(palette)}
+        onOpenPalette={openPalette}
       />
     )
   }
